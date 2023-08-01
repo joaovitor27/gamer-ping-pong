@@ -27,7 +27,7 @@ const leftPaddle = {
     x: gapX,
     y: 300,
     w: lineWidth,
-    h: 200,
+    h: 300,
     _move: function() {
         this.y = mouse.y - this.h / 2
     },
@@ -40,10 +40,10 @@ const leftPaddle = {
 
 const rightPaddle = {
     x: field.w - lineWidth - gapX,
-    y: 600,
+    y: 800,
     w: lineWidth,
-    h: 200,
-    seep: 5,
+    h: 300,
+    seep: 3.5,
     // _move: function() {
     //     this.y = mouse.y - this.h / 2
     // },
@@ -55,7 +55,8 @@ const rightPaddle = {
         }
     },
     speed: function() {
-        this.seep += 0.5
+        this.seep += 0.4
+        this.h -= 30
     },
     draw: function() {
         canvasCtx.fillStyle = "#fff"
@@ -68,7 +69,7 @@ const ball = {
     x: 200,
     y: 550,
     r: 20,
-    seep: 5,
+    speed: 5,
     directionX: 1,
     directionY: 1,
     _calcPosition: function() {
@@ -76,8 +77,9 @@ const ball = {
             if (this.y + this.r > rightPaddle.y && this.y - this.r < rightPaddle.y + rightPaddle.h) {
                 this._reverseX()
             } else {
-                this._pointUp()
                 score.increaseHuman()
+                this._pointUp()
+                console.log(this.speed)
             }
         }
 
@@ -85,8 +87,9 @@ const ball = {
             if (this.y + this.r > leftPaddle.y && this.y - this.r < leftPaddle.y + leftPaddle.h) {
                 this._reverseX()
             } else {
-                this._pointUp()
                 score.increaseComputer()
+                this._pointUp()
+                console.log(this.speed)
             }
         }
 
@@ -96,10 +99,11 @@ const ball = {
         }
     },
     _speedUp: function() {
-        this.seep += 5
+        this.speed += 0.3
+        console.log(this.speed)
     },
     _pointUp: function() {
-        this._speedUp
+        this._speedUp()
         rightPaddle.speed()
         this.x = field.w / 2
         this.y = field.h / 2
@@ -111,8 +115,8 @@ const ball = {
         this.directionY *= -1
     },
     _move: function () {
-        this.x += this.directionX * this.seep
-        this.y += this.directionY * this.seep
+        this.x += this.directionX * this.speed
+        this.y += this.directionY * this.speed
     },
     draw: function() {
         canvasCtx.fillStyle = "#fff"
@@ -129,9 +133,21 @@ const score = {
     computer: 0,
     increaseHuman: function() {
         this.human++
+        if (this.human === 5) {
+            alert("Você ganhou, PARABÉNS!")
+            this.human = 0
+            this.computer = 0
+            window.location.reload()
+        }
     },
     increaseComputer: function() {
         this.computer++
+        if (this.computer === 5) {
+            alert("Você perdeu, LIXO!")
+            this.human = 0
+            this.computer = 0
+            window.location.reload()
+        }
     },
     draw: function() {
         canvasCtx.font = "bold 72px Arial"
